@@ -1,22 +1,13 @@
 {% extends 'layout.html' %}
-{% load static %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block head %}
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
-<script src="{% static 'main.js' %}"></script>
-<script src="https://js.stripe.com/v3/"></script>
-{% endblock %}
+{% block head %}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <p>{{models.img}}</p>
-            <img src="{{models.img}}" alt="" style="width: 400px;">
+            <img src="../../media/{{models.img}}" alt="" style="width: 400px;">
         </div>
         <div class="col-md-6">
             <h2>
@@ -31,5 +22,16 @@
     </div>
     <!--    <h4>Інші фото</h4>-->
     <!--    <p><img src="../media/{{model.profile_img}}" alt="" style="width: 150px;"></p>-->
+    <div class="row">
+        {% for el in products %}
+        <div class="col-md-3">
+            <h3>{{ el.name }}</h3>
+            <h5>{{ el.price }}</h5>
+            <div style="background-color: black; color: white; height: 50px; width: 50px;">
+                <a href="{% url 'landing-page' models.id el.id %}" style="padding: 20px">Buy</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

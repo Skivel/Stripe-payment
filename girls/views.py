@@ -1,4 +1,5 @@
 from .models import Models
+from products.models import Product
 from django.views.generic import TemplateView
 
 
@@ -22,9 +23,11 @@ class ModelDetail(TemplateView):
     def get_context_data(self, **kwargs):
         model_id = self.kwargs["girl_id"]
         models = Models.objects.get(id=model_id)
+        products = Product.objects.all()
         context = super(ModelDetail, self).get_context_data(**kwargs)
         context.update({
             'title': f'{models.name}',
-            'models': models
+            'models': models,
+            'products': products
         })
         return context

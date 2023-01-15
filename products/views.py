@@ -6,6 +6,8 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from django.views import View
+
+from girls.models import Models
 from .models import Product
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -23,18 +25,23 @@ class ProductLandingPageView(TemplateView):
     template_name = "landing.html"
 
     def get_context_data(self, **kwargs):
+        girl_id = self.kwargs["girl_id"]
+        girl = Models.objects.get(id=girl_id)
         product_id = self.kwargs["product_id"]
         product = Product.objects.get(id=product_id)
         context = super(ProductLandingPageView, self).get_context_data(**kwargs)
         context.update({
             "product": product,
-            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+            'girl': girl
         })
         return context
 
 
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
+        girl_id = self.kwargs["girl_id"]
+        girl = Models.objects.get(id=girl_id)
         product_id = self.kwargs["pk"]
         product = Product.objects.get(id=product_id)
         YOUR_DOMAIN = "http://127.0.0.1:8000"
@@ -47,7 +54,8 @@ class CreateCheckoutSessionView(View):
                         'unit_amount': product.price,
                         'product_data': {
                             'name': product.name,
-                            # 'images': ['https://i.imgur.com/EHyR2nP.png'],
+                            'images': [f'https://static.wikia.nocookie.net/arianagrande/images/f/f1/Ariana_Grande_-_Grammys_2020_-_Red_carpet.jpg/revision/latest?cb=20210513080156&path-prefix=pl'],
+                            'description': girl.name
                         },
                     },
                     'quantity': 1,
@@ -55,7 +63,7 @@ class CreateCheckoutSessionView(View):
             ],
             metadata={
                 "product_id": product.id,
-                'girl_name': product.name,
+                'product_name': product.name,
                 'price': product.price
             },
             mode='payment',

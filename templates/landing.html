@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Buy cool new product</title>
+    <title>{{ product.name }} Pack</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
     <script src="https://js.stripe.com/v3/"></script>
@@ -203,7 +203,7 @@ button:disabled {
     var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
     var checkoutButton = document.getElementById("checkout-button");
     checkoutButton.addEventListener("click", function () {
-      fetch("{% url 'create-checkout-session' product.id %}", {
+      fetch("{% url 'create-checkout-session' product.id girl.id %}", {
         method: "POST",
         headers: {
             'X-CSRFToken': csrftoken
