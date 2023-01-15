@@ -2,9 +2,9 @@ from django.db import models
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=100)
-    price = models.IntegerField(default=0)  # cents
-    file = models.FileField(upload_to="product_files/", blank=True, null=True)
+    name = models.CharField(verbose_name="Назва пакету", max_length=100)
+    price = models.IntegerField(verbose_name="Ціна", default=0)  # cents
+    vote = models.IntegerField(verbose_name="Кількість голосів", default=0)
 
     def __str__(self):
         return self.name

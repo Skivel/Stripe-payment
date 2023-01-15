@@ -16,6 +16,18 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class SuccessView(TemplateView):
     template_name = "success.html"
 
+    def get_context_data(self, **kwargs):
+        product_id = self.kwargs["product_id"]
+        product = Product.objects.get(id=product_id)
+        girl_id = self.kwargs["girl_id"]
+        girl = Models.objects.get(id=girl_id)
+        Models.objects.filter(id=girl_id).update(score=girl.score + product.vote)
+        context = super(SuccessView, self).get_context_data(**kwargs)
+        context.update({
+            'girl': girl
+        })
+        return context
+
 
 class CancelView(TemplateView):
     template_name = "cancel.html"
@@ -67,7 +79,7 @@ class CreateCheckoutSessionView(View):
                 'price': product.price
             },
             mode='payment',
-            success_url=YOUR_DOMAIN + '/success/',
+            success_url=YOUR_DOMAIN + f'/success/{girl.id}/{product.id}',
             cancel_url=YOUR_DOMAIN + '/cancel/',
         )
         return JsonResponse({

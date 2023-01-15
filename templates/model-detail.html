@@ -13,10 +13,12 @@
             <h2>
                 {{ models.name }}
             </h2>
+            {% if models.info != "" %}
             <h4>Опис</h4>
             <p>
                 {{ models.info }}
             </p>
+            {% endif %}
             <h6>Рейтинг {{ models.score }}</h6>
         </div>
     </div>
@@ -26,7 +28,8 @@
         {% for el in products %}
         <div class="col-md-3">
             <h3>{{ el.name }}</h3>
-            <h5>{{ el.price }}</h5>
+            <h5>{{ el.vote }} votes</h5>
+            <h5>{{ el.price }} AED</h5>
             <div style="background-color: black; color: white; height: 50px; width: 50px;">
                 <a href="{% url 'landing-page' models.id el.id %}" style="padding: 20px">Buy</a>
             </div>
