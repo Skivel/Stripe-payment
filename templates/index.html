@@ -6,7 +6,7 @@
     <div class="row">
         {% for el in models %}
         <a href="{% url 'model-detail' el.id %}">
-            <div class="col-md-3" style="width: 250px;">
+            <div class="col-md-4" style="width: 250px;">
                 <img src="media/{{el.img}}" alt="" style="width: 200px;">
                 <h3>{{el.name}}</h3>
                 <p>Кількість голосів: {{ el.score }}</p>
