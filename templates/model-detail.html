@@ -29,7 +29,7 @@
         <div class="col-md-3">
             <h3>{{ el.name }}</h3>
             <h5>{{ el.vote }} votes</h5>
-            <h5>{{ el.price }} AED</h5>
+            <h5>{{ el.get_display_price }} AED</h5>
             <div style="background-color: black; color: white; height: 50px; width: 50px;">
                 <a href="{% url 'landing-page' models.id el.id %}" style="padding: 20px">Buy</a>
             </div>

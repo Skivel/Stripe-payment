@@ -16,18 +16,6 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class SuccessView(TemplateView):
     template_name = "success.html"
 
-    def get_context_data(self, **kwargs):
-        product_id = self.kwargs["product_id"]
-        product = Product.objects.get(id=product_id)
-        girl_id = self.kwargs["girl_id"]
-        girl = Models.objects.get(id=girl_id)
-        Models.objects.filter(id=girl_id).update(score=girl.score + product.vote)
-        context = super(SuccessView, self).get_context_data(**kwargs)
-        context.update({
-            'girl': girl
-        })
-        return context
-
 
 class CancelView(TemplateView):
     template_name = "cancel.html"
@@ -76,7 +64,8 @@ class CreateCheckoutSessionView(View):
             metadata={
                 "product_id": product.id,
                 'product_name': product.name,
-                'price': product.price
+                'price': product.price,
+                'girl_id': girl.id
             },
             mode='payment',
             success_url=YOUR_DOMAIN + f'/success/{girl.id}/{product.id}',
@@ -108,37 +97,16 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
 
-        customer_email = session["customer_details"]["email"]
+        print(session)
+
         product_id = session["metadata"]["product_id"]
-
         product = Product.objects.get(id=product_id)
 
-        send_mail(
-            subject="Here is your product",
-            message=f"Thanks for your purchase. Here is the product you ordered. The URL is {product.url}",
-            recipient_list=[customer_email],
-            from_email="matt@test.com"
-        )
+        girl_id = session["metadata"]["girl_id"]
+        girl = Models.objects.get(id=girl_id)
 
-        # TODO - decide whether you want to send the file or the URL
-
-    elif event["type"] == "payment_intent.succeeded":
-        intent = event['data']['object']
-
-        stripe_customer_id = intent["customer"]
-        stripe_customer = stripe.Customer.retrieve(stripe_customer_id)
-
-        customer_email = stripe_customer['email']
-        product_id = intent["metadata"]["product_id"]
-
-        product = Product.objects.get(id=product_id)
-
-        send_mail(
-            subject="Here is your product",
-            message=f"Thanks for your purchase. Here is the product you ordered. The URL is {product.url}",
-            recipient_list=[customer_email],
-            from_email="matt@test.com"
-        )
+        girl.score = girl.score + product.vote
+        girl.save()
 
     return HttpResponse(status=200)
 
