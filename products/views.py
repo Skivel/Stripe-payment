@@ -14,15 +14,15 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class SuccessView(TemplateView):
-    template_name = "success.html"
+    template_name = "payments/success.html"
 
 
 class CancelView(TemplateView):
-    template_name = "cancel.html"
+    template_name = "payments/cancel.html"
 
 
 class ProductLandingPageView(TemplateView):
-    template_name = "landing.html"
+    template_name = "payments/landing.html"
 
     def get_context_data(self, **kwargs):
         girl_id = self.kwargs["girl_id"]
